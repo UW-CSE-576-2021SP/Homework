@@ -1,0 +1,9 @@
+*.swp
+*.o
+*.a
+*.so
+*.pyc
+*.exe
+*.jpg
+__pycache__/*
+obj/*
