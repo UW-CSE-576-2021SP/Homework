@@ -6,11 +6,11 @@ To get started, make sure you have `git`, a C compiler, and `make` installed. Th
 
 ```
 git clone https://github.com/UW-CSE-576-2021SP/Homework
-cd homeworks
+cd Homework
 make
 ```
 
-and check to see that everything compiles correctly. We recommend using Linux or MacOS for the homeworks since installing `make` is easier. Linux uses GNU C++ compiler, while MacOS uses XCode C++ compiler. 
+and check to see that everything compiles correctly. We recommend using Linux or MacOS for the homework since installing `make` is easier. Linux uses GNU C++ compiler, while MacOS uses XCode C++ compiler. 
 
 ## Get started on HW1
 
