@@ -7,6 +7,6 @@
 *.jpg
 __pycache__/*
 obj/*
-
+.DS_Store
 !figs/*
 !data/*
