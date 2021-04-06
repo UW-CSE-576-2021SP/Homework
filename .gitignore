@@ -10,3 +10,5 @@ obj/*
 .DS_Store
 !figs/*
 !data/*
+
+main
