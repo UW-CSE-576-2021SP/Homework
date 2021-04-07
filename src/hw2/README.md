@@ -27,7 +27,7 @@ Fill in `float nn_interpolate(image im, float x, float y, int c);`. It should pe
 #### TO DO ####
 Fill in `image nn_resize(image im, int w, int h)`. It should:
 - Create a new image that is `w x h` and the same number of channels as `im`
-- Loop over the pixels and map back to the old coordinates
+- Loop over the pixels and map back to the old coordinates (remember to use 0.5 offset appropriately)
 - Use nn_interpolate() to fill in the image
 
 Now you should be able to run the following python command in `tryhw2.py`:
