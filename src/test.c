@@ -32,20 +32,6 @@ image center_crop(image im)
     return c;
 }
 
-void feature_normalize2(image im)
-{
-    int i;
-    float min = im.data[0];
-    float max = im.data[0];
-    for(i = 0; i < im.w*im.h*im.c; ++i){
-        if(im.data[i] > max) max = im.data[i];
-        if(im.data[i] < min) min = im.data[i];
-    }
-    for(i = 0; i < im.w*im.h*im.c; ++i){
-        im.data[i] = (im.data[i] - min)/(max-min);
-    }
-}
-
 int tests_total = 0;
 int tests_fail = 0;
 
@@ -424,8 +410,8 @@ void test_sobel(){
     image *res = sobel_image(im);
     image mag = res[0];
     image theta = res[1];
-    feature_normalize2(mag);
-    feature_normalize2(theta);
+    feature_normalize(mag);
+    feature_normalize(theta);
 
     image gt_mag = load_image("figs/magnitude.png");
     image gt_theta = load_image("figs/theta.png");
