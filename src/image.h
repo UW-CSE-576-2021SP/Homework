@@ -85,13 +85,13 @@ image make_emboss_filter();
 image make_gaussian_filter(float sigma);
 image make_gx_filter();
 image make_gy_filter();
-void normalize_image(image im);
+void feature_normalize(image im);
 void l1_normalize(image im);
-void threshold_image(image im, float thresh);
 image *sobel_image(image im);
 image colorize_sobel(image im);
 image smooth_image(image im, float sigma);
 image apply_median_filter(image im, int kernel_size);
+image apply_bilateral_filter(image im, float sigma1, float sigma2);
 
 // Harris and Stitching
 image structure_matrix(image im, float sigma);
