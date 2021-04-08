@@ -206,7 +206,7 @@ image colorize_sobel(image im)
 // EXTRA CREDIT: Median filter
 
 /*
-image apply_median_filter(image im, int k)
+image apply_median_filter(image im, int kernel_size)
 {
   return make_image(1,1,1);
 }
@@ -215,7 +215,7 @@ image apply_median_filter(image im, int k)
 // SUPER EXTRA CREDIT: Bilateral filter
 
 /*
-image apply_bilateral_filter(image im)
+image apply_bilateral_filter(image im, float sigma1, float sigma2)
 {
   return make_image(1,1,1);
 }
