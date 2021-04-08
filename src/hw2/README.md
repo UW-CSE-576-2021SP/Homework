@@ -2,7 +2,7 @@
 
 Welcome, it's time for homework 2! This one may be a little harder than the last one so remember to start early! In order to make grading easier, please only edit the files we mention to submit. You will submit the `src/hw2/modify_image.c` file on Canvas.
 
-Run the following commands from inside your `homeworks` folder:
+Run the following commands from inside your `Homework` folder:
 ```
 git pull
 make clean
@@ -10,8 +10,10 @@ make
 ```
 and then run `./main test hw2`. For python tests use `python tryhw2.py`. During testing, you can call all the commands in the same line as:
 ```
-make clean; make; ./main test hw2
+make clean; make; ./main test hw2; python tryhw2.py
 ```
+
+NOTE: You may (ideally should) directly use functions you wrote in Homework 1 when needed.
 
 ## 1. Image resizing ##
 
@@ -89,13 +91,14 @@ Fill in `image make_box_filter(int w)`. We will only use square box filters, so 
 ### 2.2 Write a convolution function ###
 
 #### TO DO ####
-Fill in `image convolve_image(image im, image filter, int preserve)`. The parameter `preserve` takes a value of either 0 or 1. For this function we have a few scenarios. With normal convolutions we do a weighted sum over an area of the image. With multiple channels in the input image there are a few possible cases we want to handle:
+Fill in `image convolve_image(image im, image filter, int preserve)`. The parameter `preserve` takes a value of either 0 or 1. We will use "clamp" padding for the image borders (get_pixel() already handles it). For this function we have a few scenarios. With normal convolutions we do a weighted sum over an area of the image. With multiple channels in the input image there are a few possible cases we want to handle:
 
 - If `filter` and `im` have the same number of channels then it's just a normal convolution. We sum over spatial and channel dimensions and produce a 1 channel image. UNLESS:
 - If `preserve` is set to 1 we should produce an image with the same number of channels as the input. This is useful if, for example, we want to run a box filter over an RGB image and get out an RGB image. This means each channel in the image will be filtered by the corresponding channel in the filter. UNLESS:
 - If the `filter` only has one channel but `im` has multiple channels we want to apply the filter to each of those channels. Then we either sum between channels or not depending on if `preserve` is set.
 
-Also, `filter` should have the same number of channels as `im` or have 1 channel. This should be checked with an `assert`.
+Also, `filter` should have the same number of channels as `im` or have 1 channel. This MUST be checked with an `assert()`.
+Hint: You can reduce number of lines of code by using the conditional operator in C.
 
 We are calling this a convolution but you don't need to flip the filter or anything (we're actually doing a cross-correlation). Just apply it to the image as we discussed in class:
 
@@ -128,7 +131,7 @@ Resize                     |  Blur and Resize
 ### 2.3 Make some more filters and try them out! ###
 
 #### TO DO ####
-Fill in the functions `image make_highpass_filter()`, `image make_sharpen_filter()`, and `image make_emboss_filter()` to return the example kernels we covered in class. You can try them out on some images! Now, answer Questions 2.3.1 and 2.3.2 in the source file (put your answer just right there).
+Fill in the functions `image make_highpass_filter()`, `image make_sharpen_filter()`, and `image make_emboss_filter()` to return the example kernels we covered in class. You can try them out on some images! Now, answer Questions 2.3.1 and 2.3.2 in the source file (put your answers just right there).
 
 Highpass                   |  Sharpen                  | Emboss
 :-------------------------:|:-------------------------:|:--------------------|
@@ -138,11 +141,11 @@ Highpass                   |  Sharpen                  | Emboss
 ### 2.4 Implement a Gaussian kernel ###
 
 #### TO DO ####
-Fill in `image make_gaussian_filter(float sigma)` which will take a standard deviation value `sigma` and return a filter that smooths using a gaussian with that sigma. How big should the filter be? 99% of the probability mass for a gaussian is within +/- 3 standard deviations, so make the kernel be 6 times the size of sigma. But also we want an odd number, so make it be the next highest odd integer from 6 x sigma. We need to fill in our kernel with some values. Use the probability density function for a 2D gaussian:
+Fill in `image make_gaussian_filter(float sigma)` which will take a standard deviation value `sigma` and return a filter that smooths using a gaussian with that sigma. How big should the filter be? 99% of the probability mass for a gaussian is within +/- 3 standard deviations, so make the kernel be 6 times the size of sigma. But also we want an odd number, so make it be the next highest odd integer from 6 x sigma. We need to fill in our kernel with some values (take care of the 0.5 offset for the pixel co-ordinates). Use the probability density function for a 2D gaussian:
 
 ![2d gaussian](../../figs/2dgauss.png)
 
-Technically this isn't perfect, what we would really want to do is integrate over the area covered by each cell in the filter. But that's much more complicated and this is a decent estimate. Remember though, this is a blurring filter so we want all the weights to sum to 1. Now you should be able to try out your new blurring function:
+Technically this isn't perfect, what we would really want to do is integrate over the area covered by each cell in the filter. But that's much more complicated and this is a decent estimate. Remember though, this is a blurring filter so we want all the weights to sum to 1 (i.e. normalize the filter). Now you should be able to try out your new blurring function:
 
 ```
 im = load_image("data/dog.jpg")
@@ -235,18 +238,18 @@ which results in:
 
 Now using your sobel filter you can make a cool, stylized one. 
 #### TO DO ####
-Write a function `image colorize_sobel(image im)`. Call `image *sobel_image(image im)`, use the magnitude to specify the saturation and value of an image and the angle (direction) to specify the hue. Then use the `hsv_to_rgb()` function we wrote in homework 1. Using some smoothing (a Gaussian with sigma 4), the result should look like this:
+Write a function `image colorize_sobel(image im)`. Call `image *sobel_image(image im)`, use the magnitude to specify the saturation and value of an image and the angle (direction) to specify the hue. Then use the `hsv_to_rgb()` function we wrote in Homework 1. Using some smoothing (a Gaussian with sigma 4), the result should look like this:
 
 ![](../../figs/lcolorized.png)
 
 ## 2.6 EXTRA CREDIT: Median Filter ##
 
-Now, we want to apply a non-linear filter, [Median Filter](https://en.wikipedia.org/wiki/Median_filter), to an image. Median filter is a great tool to solve the salt and pepper noises. We assume a median filter is a square, with the same height and width. The kernel size is always a positive odd number. We use "clamp" padding for borders and corners. The output image should have the same width, height, and channels as the input image. You should apply median filter to each channel of the input image.
+Now, we want to apply a non-linear filter, [Median Filter](https://en.wikipedia.org/wiki/Median_filter), to an image. Median filter is a great tool to solve the salt and pepper noises. We assume a median filter is a square, with the same height and width. The kernel size is always a positive odd number. We use clamp padding for borders. The output image should have the same width, height, and channels as the input image. You should apply median filter to each channel of the input image.
 
 #### TO DO (extra credit) ####
-Fill in the function `image apply_median_filter(image im, int k)`. NOTE: You may need to write appropriate header functions. Feel free to create a test function like the existing ones in test.c and/or tryhw2.py to check the correctness of your implementation.
+Fill in the function `image apply_median_filter(image im, int kernel_size)`. NOTE: You may need to write appropriate header functions. Feel free to create a test function like the existing ones in test.c and/or tryhw2.py to check the correctness of your implementation. Hint: Use the `qsort` function of C, and define the compare function yourself.
 
-To submit the final image apply your filter to `/data/landscape.jpg` and name it `median.jpg`. Good luck!
+To submit the final image apply your filter to `/data/landscape.jpg` (write appropriate code in tryhw2.py and uwimg.py) and name it `median.jpg`. Good luck!
 
 
 Input Noisy Image                 |  Output Image 
@@ -264,18 +267,18 @@ where the individual weights are
 
 ![W](../../figs/bilateral_wij.png)
 
-and the normalization factor is 
+where f(.) returns the image pixel value and the normalization factor is 
 
 ![W](../../figs/bilateral_norm.png)
 
-for a kernel of size (2k+1).
+for a kernel of size (2k+1), which you can perform by calling the `l1_normalize` function.
 
-Hint: For the spatial Gaussian, you can use the `make_gaussian_filter()` you implemented above, with `sigma1`. For the color distance Gaussian, you should compute the Gaussian with the distance between the pixel values for each channel separately and then apply a Gaussian with `sigma2`.
+Hint: For the spatial Gaussian, you can use the `make_gaussian_filter()` you implemented above, with `sigma1`. For the color distance Gaussian, you should compute the Gaussian with `sigma2` with the distance between the pixel values for each channel separately.
 
 #### TO DO (super extra credit) ####
-Write a function `image apply_bilateral_filter(image im, float sigma1, float sigma2)` where `sigma1` is for the spatial gaussian and `sigma2` is for the color distance Gaussian. Use a kernel size of 6 x `sigma1` for the bilateral filter. Your image should have a similar effect to the image below, so we suggest testing out a few spatial and color sigma parameters before submitting your final image (you can find the before image in `/data/bilateral_raw.png`. Note that it is 40x40 pixels and is being upsampled in this README). 
+Write a function `image apply_bilateral_filter(image im, float sigma1, float sigma2)` where `sigma1` is for the spatial gaussian and `sigma2` is for the color distance Gaussian. Use a kernel size of 6 x `sigma1` for the bilateral filter. Your image should have a similar effect to the image below, so we suggest testing out a few spatial and color sigma parameters before submitting your final image (you can find the before image in `/data/bilateral_raw.png`. Note that it is 40x40 pixels and is being upsampled in this README). Ideally, `sigma1` should be > 1 and `sigma2` should be < 0.5.
 
-To submit the final image apply your filter to `/data/landscape.jpg` (Credit: Sylvian Paris) and name it `bilateral.jpg`. Good luck!
+To submit the final image apply your filter to `/data/landscape.jpg` (write appropriate code in tryhw2.py and uwimg.py) and name it `bilateral.jpg`. Good luck!
 
 Before                 |  After 
 :-----------------:|:------------------:
