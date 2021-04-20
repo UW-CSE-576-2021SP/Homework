@@ -99,7 +99,7 @@ image cornerness_response(image S);
 point make_point(float x, float y);
 descriptor make_descriptor(image im, int i);
 point project_point(matrix H, point p);
-matrix compute_homography(match *matches, int mn, int n);
+matrix compute_homography(match *matches, int n);
 int model_inliers(matrix H, match *m, int n, float thresh);
 image combine_images(image a, image b, matrix H);
 match *match_descriptors(descriptor *a, int an, descriptor *b, int bn, int *mn);

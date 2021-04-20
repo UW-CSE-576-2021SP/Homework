@@ -32,6 +32,20 @@ image center_crop(image im)
     return c;
 }
 
+void feature_normalize2(image im)
+{
+    int i;
+    float min = im.data[0];
+    float max = im.data[0];
+    for(i = 0; i < im.w*im.h*im.c; ++i){
+        if(im.data[i] > max) max = im.data[i];
+        if(im.data[i] < min) min = im.data[i];
+    }
+    for(i = 0; i < im.w*im.h*im.c; ++i){
+        im.data[i] = (im.data[i] - min)/(max-min);
+    }
+}
+
 int tests_total = 0;
 int tests_fail = 0;
 
@@ -66,7 +80,7 @@ int same_image(image a, image b, float eps)
     for(i = 0; i < a.w*a.h*a.c; ++i){
         float thresh = (fabs(b.data[i]) + fabs(a.data[i])) * eps / 2;
         if (thresh > eps) eps = thresh;
-        if(!within_eps(a.data[i], b.data[i], eps))
+        if(!within_eps(a.data[i], b.data[i], eps)) 
         {
             printf("The value should be %f, but it is %f! \n", b.data[i], a.data[i]);
             return 0;
@@ -93,15 +107,15 @@ void test_get_pixel(){
 void test_set_pixel(){
     image gt = load_image("data/dots.png");
     image d = make_image(4,2,3);
-    set_pixel(d, 0,0,0,0); set_pixel(d, 0,0,1,0); set_pixel(d, 0,0,2,0);
-    set_pixel(d, 1,0,0,1); set_pixel(d, 1,0,1,1); set_pixel(d, 1,0,2,1);
-    set_pixel(d, 2,0,0,1); set_pixel(d, 2,0,1,0); set_pixel(d, 2,0,2,0);
-    set_pixel(d, 3,0,0,1); set_pixel(d, 3,0,1,1); set_pixel(d, 3,0,2,0);
+    set_pixel(d, 0,0,0,0); set_pixel(d, 0,0,1,0); set_pixel(d, 0,0,2,0); 
+    set_pixel(d, 1,0,0,1); set_pixel(d, 1,0,1,1); set_pixel(d, 1,0,2,1); 
+    set_pixel(d, 2,0,0,1); set_pixel(d, 2,0,1,0); set_pixel(d, 2,0,2,0); 
+    set_pixel(d, 3,0,0,1); set_pixel(d, 3,0,1,1); set_pixel(d, 3,0,2,0); 
 
-    set_pixel(d, 0,1,0,0); set_pixel(d, 0,1,1,1); set_pixel(d, 0,1,2,0);
-    set_pixel(d, 1,1,0,0); set_pixel(d, 1,1,1,1); set_pixel(d, 1,1,2,1);
-    set_pixel(d, 2,1,0,0); set_pixel(d, 2,1,1,0); set_pixel(d, 2,1,2,1);
-    set_pixel(d, 3,1,0,1); set_pixel(d, 3,1,1,0); set_pixel(d, 3,1,2,1);
+    set_pixel(d, 0,1,0,0); set_pixel(d, 0,1,1,1); set_pixel(d, 0,1,2,0); 
+    set_pixel(d, 1,1,0,0); set_pixel(d, 1,1,1,1); set_pixel(d, 1,1,2,1); 
+    set_pixel(d, 2,1,0,0); set_pixel(d, 2,1,1,0); set_pixel(d, 2,1,2,1); 
+    set_pixel(d, 3,1,0,1); set_pixel(d, 3,1,1,0); set_pixel(d, 3,1,2,1); 
 
     // Test images are same
     TEST(same_image(d, gt, EPS));
@@ -182,7 +196,7 @@ void test_hsv_to_rgb()
     free_image(c);
 }
 
-void test_hw1()
+void test_hw0()
 {
     test_get_pixel();
     test_set_pixel();
@@ -195,9 +209,7 @@ void test_hw1()
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
 
-/*************************
-HOMEWORK 2
-*************************/
+// HOMEWORK 1
 
 void test_nn_interpolate()
 {
@@ -272,6 +284,18 @@ void test_multiple_resize()
     free_image(im);
     free_image(gt);
 }
+
+void test_hw1()
+{
+    test_nn_interpolate();
+    test_nn_resize();
+    test_bl_interpolate();
+    test_bl_resize();
+    test_multiple_resize();
+    printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
+}
+
+// HOMEWORK 2
 
 void test_highpass_filter(){
     image im = load_image("data/dog.jpg");
@@ -410,8 +434,8 @@ void test_sobel(){
     image *res = sobel_image(im);
     image mag = res[0];
     image theta = res[1];
-    feature_normalize(mag);
-    feature_normalize(theta);
+    feature_normalize2(mag);
+    feature_normalize2(theta);
 
     image gt_mag = load_image("figs/magnitude.png");
     image gt_theta = load_image("figs/theta.png");
@@ -445,11 +469,6 @@ void test_sobel(){
 
 void test_hw2()
 {
-    test_nn_interpolate();
-    test_nn_resize();
-    test_bl_interpolate();
-    test_bl_resize();
-    test_multiple_resize();
     test_gaussian_filter();
     test_sharpen_filter();
     test_emboss_filter();
@@ -462,3 +481,96 @@ void test_hw2()
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
 
+
+// HOMEWORK 3
+
+void test_structure()
+{
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    feature_normalize2(s);
+    image gt = load_image("figs/structure.png");
+    TEST(same_image(s, gt, EPS));
+    free_image(im);
+    free_image(s);
+    free_image(gt);
+}
+
+void test_cornerness()
+{
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    image c = cornerness_response(s);
+    feature_normalize2(c);
+    image gt = load_image("figs/response.png");
+    TEST(same_image(c, gt, EPS));
+    free_image(im);
+    free_image(s);
+    free_image(c);
+    free_image(gt);
+}
+
+void test_projection()
+{
+    matrix H = make_translation_homography(12.4, -3.2);
+    TEST(same_point(project_point(H, make_point(0,0)), make_point(12.4, -3.2), EPS));
+    free_matrix(H);
+
+    H = make_identity_homography();
+    H.data[0][0] = 1.32;
+    H.data[0][1] = -1.12;
+    H.data[0][2] = 2.52;
+    H.data[1][0] = -.32;
+    H.data[1][1] = -1.2;
+    H.data[1][2] = .52;
+    H.data[2][0] = -3.32;
+    H.data[2][1] = 1.87;
+    H.data[2][2] = .112;
+    point p = project_point(H, make_point(3.14, 1.59));
+    TEST(same_point(p, make_point(-0.66544, 0.326017), EPS));
+    free_matrix(H);
+}
+
+void test_compute_homography()
+{
+    match *m = calloc(4, sizeof(match));
+    m[0].p = make_point(0,0);
+    m[0].q = make_point(10,10);
+    m[1].p = make_point(3,3);
+    m[1].q = make_point(13,13);
+    m[2].p = make_point(-1.2,-3.4);
+    m[2].q = make_point(8.8,6.6);
+    m[3].p = make_point(9,10);
+    m[3].q = make_point(19,20);
+    matrix H = compute_homography(m, 4);
+    matrix d10 = make_translation_homography(10, 10);
+    TEST(same_matrix(H, d10));
+    free_matrix(H);
+    free_matrix(d10);
+
+    m[0].p = make_point(7.2,1.3);
+    m[0].q = make_point(10,10.9);
+    m[1].p = make_point(3,3);
+    m[1].q = make_point(1.3,7.3);
+    m[2].p = make_point(-.2,-3.4);
+    m[2].q = make_point(.8,2.6);
+    m[3].p = make_point(-3.2,2.4);
+    m[3].q = make_point(1.5,-4.2);
+    H = compute_homography(m, 4);
+    matrix Hp = make_identity_homography();
+    Hp.data[0][0] = -0.1328042; Hp.data[0][1] = -0.2910411; Hp.data[0][2] = 0.8103200;
+    Hp.data[1][0] = -0.0487439; Hp.data[1][1] = -1.3077799; Hp.data[1][2] = 1.4796660;
+    Hp.data[2][0] = -0.0788730; Hp.data[2][1] = -0.3727209; Hp.data[2][2] = 1.0000000;
+    TEST(same_matrix(H, Hp));
+    free_matrix(H);
+    free_matrix(Hp);
+}
+
+void test_hw3()
+{
+    test_structure();
+    test_cornerness();
+    test_projection();
+    test_compute_homography();
+    printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
+}

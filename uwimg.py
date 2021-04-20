@@ -118,7 +118,7 @@ same_image = lib.same_image
 same_image.argtypes = [IMAGE, IMAGE]
 same_image.restype = c_int
 
-##### HOMEWORK 2
+##### HOMEWORK 1
 
 nn_resize = lib.nn_resize
 nn_resize.argtypes = [IMAGE, c_int, c_int]
@@ -131,6 +131,8 @@ bilinear_resize.restype = IMAGE
 make_box_filter = lib.make_box_filter
 make_box_filter.argtypes = [c_int]
 make_box_filter.restype = IMAGE
+
+##### HOMEWORK 2
 
 make_highpass_filter = lib.make_highpass_filter
 make_highpass_filter.argtypes = []
@@ -176,6 +178,38 @@ convolve_image = lib.convolve_image
 convolve_image.argtypes = [IMAGE, IMAGE, c_int]
 convolve_image.restype = IMAGE
 
+##### HOMEWORK 3
+
+harris_corner_detector = lib.harris_corner_detector
+harris_corner_detector.argtypes = [IMAGE, c_float, c_float, c_int, POINTER(c_int)]
+harris_corner_detector.restype = POINTER(DESCRIPTOR)
+
+mark_corners = lib.mark_corners
+mark_corners.argtypes = [IMAGE, POINTER(DESCRIPTOR), c_int]
+mark_corners.restype = None
+
+detect_and_draw_corners = lib.detect_and_draw_corners
+detect_and_draw_corners.argtypes = [IMAGE, c_float, c_float, c_int]
+detect_and_draw_corners.restype = None
+
+cylindrical_project = lib.cylindrical_project
+cylindrical_project.argtypes = [IMAGE, c_float]
+cylindrical_project.restype = IMAGE
+
+structure_matrix = lib.structure_matrix
+structure_matrix.argtypes = [IMAGE, c_float]
+structure_matrix.restype = IMAGE
+
+find_and_draw_matches = lib.find_and_draw_matches
+find_and_draw_matches.argtypes = [IMAGE, IMAGE, c_float, c_float, c_int]
+find_and_draw_matches.restype = IMAGE
+
+panorama_image_lib = lib.panorama_image
+panorama_image_lib.argtypes = [IMAGE, IMAGE, c_float, c_float, c_int, c_float, c_int, c_int, c_int]
+panorama_image_lib.restype = IMAGE
+
+def panorama_image(a, b, sigma=2, thresh=5, nms=3, inlier_thresh=2, iters=10000, cutoff=30, draw=0):
+    return panorama_image_lib(a, b, sigma, thresh, nms, inlier_thresh, iters, cutoff, draw)
 
 if __name__ == "__main__":
     im = load_image("data/dog.jpg")
