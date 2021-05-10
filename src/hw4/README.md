@@ -155,7 +155,7 @@ We'll also need a list of the images in our training and test set. To do this yo
     find train -name \*.png > mnist.train
     find test -name \*.png > mnist.test
 
-Answer the questions in this section inside the `classifier.c` file at the bottom as comments. Answers can be short, 1-2 sentences.
+Answer the questions in this section in a document which you later need to convert to a PDF and submit as `hw4.pdf`. Answers can be short, 1-2 sentences.
 
 ### 2.1 Train a linear softmax model ###
 
@@ -216,4 +216,4 @@ What is the best training accuracy and testing accuracy? Summarize all the hyper
 
 ## Turn it in ##
 
-Turn in your `classifier.c` on canvas under Homework 4.
+Turn in your `classifier.c` and hw4.pdf on canvas under Homework 4.
