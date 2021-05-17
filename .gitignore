@@ -12,3 +12,4 @@ obj/*
 !data/*
 
 main
+*.csv
