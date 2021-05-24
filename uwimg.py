@@ -239,6 +239,24 @@ def make_model(layers):
     m.layers = (LAYER*m.n) (*layers)
     return m
 
+##### HOMEWORK 6
+
+draw_flow = lib.draw_flow
+draw_flow.argtypes = [IMAGE, IMAGE, c_float]
+draw_flow.restype = None
+
+box_filter_image = lib.box_filter_image
+box_filter_image.argtypes = [IMAGE, c_int]
+box_filter_image.restype = IMAGE
+
+optical_flow_images = lib.optical_flow_images
+optical_flow_images.argtypes = [IMAGE, IMAGE, c_int, c_int]
+optical_flow_images.restype = IMAGE
+
+optical_flow_webcam = lib.optical_flow_webcam
+optical_flow_webcam.argtypes = [c_int, c_int, c_int]
+optical_flow_webcam.restype = None
+
 if __name__ == "__main__":
     im = load_image("data/dog.jpg")
     save_image(im, "hey")
